@@ -1,6 +1,7 @@
 import { Reader, ReadResult, open, copy } from 'deno';
 import { stringsReader } from 'https://deno.land/x/net/util.ts';
 import escape from './escape.ts';
+import { MultiReader } from 'https://syumai.github.io/deno-libs/io/multi.ts';
 
 const globalEval = eval;
 const window = globalEval('this');
@@ -15,19 +16,21 @@ enum ReadMode {
   Value,
 }
 
-const parenStartCode = 60; // <
-const parenEndCode = 62; // >
-const percentCode = 37; // %
-const equalCode = 61; // =
-const minusCode = 45; // -
+enum Codes {
+  Begin = 60, // <
+  End = 62, // >
+  Percent = 37, // %
+  EscapedValue = 61, // =
+  Value = 45, // -
+}
 
 export async function render(path: string, params: Params): Promise<Reader> {
-  let src = await open(path);
+  const file = await open(path);
+  let src: Reader = file;
   let buf = [];
-  let statement: Array<number> = [];
+  const statement: Array<number> = [];
   const readBuf = new Uint8Array(1);
   const dec = new TextDecoder('utf-8');
-  let evalResult: Reader;
   let readMode: ReadMode = ReadMode.Normal;
 
   for (const [k, v] of Object.entries(params)) {
@@ -39,35 +42,30 @@ export async function render(path: string, params: Params): Promise<Reader> {
       const len = p.byteLength;
       let eof: boolean;
       let nread: number;
-      for (nread = 0; nread < len && !eof; nread++) {
-        if (evalResult) {
-          const { eof } = await evalResult.read(readBuf);
-          if (!eof) {
-            p[nread] = readBuf[0];
-            continue;
-          }
-        }
+      for (nread = 0; nread < len; nread++) {
         ({ eof } = await src.read(readBuf));
+        if (eof) {
+          break;
+        }
         buf.push(readBuf[0]);
         if (buf.length < 3) {
           continue;
         }
         switch (readMode) {
           case ReadMode.Normal:
-            if (buf[0] === parenStartCode && buf[1] === percentCode) {
+            // Detect ReadMode
+            if (buf[0] === Codes.Begin && buf[1] === Codes.Percent) {
               switch (buf[2]) {
-                case equalCode:
+                case Codes.EscapedValue:
                   readMode = ReadMode.EscapedValue;
                   break;
-                case minusCode:
+                case Codes.Value:
                   readMode = ReadMode.Value;
                   break;
                 default:
                   continue;
               }
-              buf.shift();
-              buf.shift();
-              buf.shift();
+              buf.splice(0);
               nread -= 3;
               continue;
             }
@@ -76,22 +74,21 @@ export async function render(path: string, params: Params): Promise<Reader> {
             }
             break;
           default:
-            if (buf[1] === percentCode && buf[2] === parenEndCode) {
+            if (buf[1] === Codes.Percent && buf[2] === Codes.End) {
               statement.push(buf.shift());
-              buf.shift();
-              buf.shift();
+              buf.splice(0);
               const body = new Uint8Array(statement);
               const str = dec.decode(body);
               const s = globalEval(str).toString();
               switch (readMode) {
                 case ReadMode.Value:
-                  evalResult = stringsReader(s);
+                  src = new MultiReader(stringsReader(s), src);
                   break;
                 case ReadMode.EscapedValue:
-                  evalResult = stringsReader(escape(s));
+                  src = new MultiReader(stringsReader(escape(s)), src);
                   break;
               }
-              statement = [];
+              statement.splice(0);
               readMode = ReadMode.Normal;
               nread -= 2;
               continue;
@@ -100,7 +97,11 @@ export async function render(path: string, params: Params): Promise<Reader> {
             break;
         }
       }
-      // TODO: flush buffer
+      // Flush buffer
+      while (nread < len && buf.length > 0) {
+        p[nread] = buf.shift();
+        nread++;
+      }
       return { nread, eof };
     },
   };
