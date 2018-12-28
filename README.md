@@ -5,10 +5,10 @@
 
 ## Status
 
-- <%= %> ... Basic support
-- <%- %> ... Basic support
+- <%= %> Escaped => Basic support
+- <%- %> Raw => Basic support
+- <%# %> Comment => Supported
 - <% %> ... WIP
-- <%# %> ... WIP
 
 ## Usage
 
@@ -17,6 +17,7 @@
 ```html
 <body>
   <h1>hello, <%= name %>!</h1>
+  <%# Example comment %>
 </body>
 ```
 
