@@ -1,20 +1,26 @@
 # dpl
 
 - [**d**eno](https://github.com/denoland/deno) tem**pl**ate engine.
-- dpl behaves as [ejs](https://ejs.co) parser currently.
+- dpl can render [ejs](https://ejs.co) with _simple rules_.
 
-## Status
+## Features
 
-- <%= %> Escaped => Basic support
-- <%- %> Raw => Basic support
-- <%# %> Comment => Supported
-- <% %> ... WIP
+### Supported
+
+- <%= %> Escaped
+- <%- %> Raw
+- <%# %> Comment
+
+### Not supported
+
+- <% %> Evaluate
+- All other features of ejs
 
 ## Usage
 
 - template.ejs
 
-```html
+```ejs
 <body>
   <h1>hello, <%= name %>!</h1>
   <%# Example comment %>
@@ -43,3 +49,11 @@ $ deno index.ts
   <h1>hello, world!</h1>
 </body>
 ```
+
+## Author
+
+syumai
+
+## License
+
+MIT
