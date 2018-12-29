@@ -41,11 +41,10 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
   return {
     async read(p: Uint8Array): Promise<ReadResult> {
       const len = p.byteLength;
-      let eof: boolean;
       let nread: number;
 
       for (nread = 0; nread < len; nread++) {
-        ({ eof } = await src.read(readBuf));
+        const { eof } = await src.read(readBuf);
         if (eof) {
           break;
         }
@@ -75,7 +74,7 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
             continue;
           }
           if (buf.length > 2) {
-            p[nread] = buf.shift();
+            p[nread - 2] = buf.shift();
           }
           continue;
         }
@@ -83,6 +82,7 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
         // Finish current ReadMode
         if (buf[1] === Codes.Percent && buf[2] === Codes.End) {
           statement.push(buf.shift());
+          nread--;
           buf.splice(0);
           // Don't execute if ReadMode is Comment.
           if (readMode !== ReadMode.Comment) {
@@ -100,18 +100,20 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
           }
           statement.splice(0);
           readMode = ReadMode.Normal;
-          nread -= 2;
+          nread -= 3;
           continue;
         }
         statement.push(buf.shift());
+        nread--;
       }
 
       // Flush buffer
       while (nread < len && buf.length > 0) {
-        p[nread] = buf.shift();
+        p[nread - 2] = buf.shift();
+        console.log(nread);
         nread++;
       }
-      return { nread, eof };
+      return { nread, eof: nread === 0 };
     },
   };
 }
