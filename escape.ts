@@ -47,7 +47,7 @@ const reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
  * escape('fred, barney, & pebbles')
  * // => 'fred, barney, &amp pebbles'
  */
-function escape(string) {
+function escape(string: string): string {
   return string && reHasUnescapedHtml.test(string)
     ? string.replace(reUnescapedHtml, chr => htmlEscapes[chr])
     : string;

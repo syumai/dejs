@@ -26,10 +26,9 @@ enum Codes {
   Comment = 35, // #
 }
 
-export async function render(path: string, params: Params): Promise<Reader> {
-  const file = await open(path);
-  let src: Reader = file;
-  let buf = [];
+async function renderInternal(body: Reader, params: Params): Promise<Reader> {
+  let src: Reader = body;
+  const buf = [];
   const statement: Array<number> = [];
   const readBuf = new Uint8Array(1);
   const dec = new TextDecoder('utf-8');
@@ -115,4 +114,17 @@ export async function render(path: string, params: Params): Promise<Reader> {
       return { nread, eof };
     },
   };
+}
+
+export async function renderString(
+  str: string,
+  params: Params
+): Promise<Reader> {
+  const body = stringsReader(str);
+  return await renderInternal(body, params);
+}
+
+export async function render(path: string, params: Params): Promise<Reader> {
+  const file = await open(path);
+  return await renderInternal(file, params);
 }

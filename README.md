@@ -46,7 +46,7 @@ import { render } from 'https://syumai.github.io/dpl/dpl.ts';
 ```sh
 $ deno index.ts
 <body>
-  <h1>hello, world!</h1>
+    <h1>hello, world!</h1>
 </body>
 ```
 
