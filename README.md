@@ -1,6 +1,6 @@
 # dejs
 
-- dejs is [ejs](https://ejs.co) engine for [deno](https://github.com/denoland/deno).
+- dejs is [ejs](https://ejs.co) template engine for [deno](https://github.com/denoland/deno).
 - dejs's render function returns `Reader`.
 
 ## Features
