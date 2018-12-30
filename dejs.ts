@@ -5,6 +5,11 @@ import escape from './escape.ts';
 const globalEval = eval;
 const window = globalEval('this');
 
+Object.defineProperty(window, '$$ESCAPE', {
+  value: escape,
+  writable: false,
+});
+
 export interface Params {
   [key: string]: any;
 }
@@ -26,7 +31,29 @@ enum Codes {
   Comment = 35, // #
 }
 
-async function renderInternal(body: Reader, params: Params): Promise<Reader> {
+interface Template {
+  (params: Params): Promise<Reader>;
+}
+
+function NewTemplate(script: string): Template {
+  return async function(params: Params): Promise<Reader> {
+    for (const [k, v] of Object.entries(params)) {
+      window[k] = v;
+    }
+    window.$$OUTPUT = [];
+
+    globalEval(script);
+
+    const reader = stringsReader(String(window.$$OUTPUT.join('')));
+    for (const k of Object.keys(params)) {
+      delete window[k];
+    }
+    delete window.$$OUTPUT;
+    return reader;
+  };
+}
+
+export async function compile(reader: Reader): Promise<Template> {
   const buf: Array<number> = [];
   const statements: Array<string> = [];
   const statementBuf = new Buffer();
@@ -36,7 +63,7 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
     await statementBuf.write(new Uint8Array([byte]));
 
   while (true) {
-    const { eof } = await body.read(readBuf);
+    const { eof } = await reader.read(readBuf);
     if (eof) {
       break;
     }
@@ -108,20 +135,13 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
   statements.push(`$$OUTPUT.push(\`${statementBuf.toString()}\`);`);
   statementBuf.reset();
 
-  for (const [k, v] of Object.entries(params)) {
-    window[k] = v;
-  }
-  window.$$OUTPUT = [];
-  window.$$ESCAPE = escape;
-
-  globalEval(statements.join(''));
-
-  return stringsReader(String(window.$$OUTPUT.join('')));
+  return NewTemplate(statements.join(''));
 }
 
-export async function render(str: string, params: Params): Promise<Reader> {
-  const body = stringsReader(str);
-  return await renderInternal(body, params);
+export async function render(body: string, params: Params): Promise<Reader> {
+  const reader = stringsReader(body);
+  const template = await compile(reader);
+  return template(params);
 }
 
 export async function renderFile(
@@ -129,7 +149,7 @@ export async function renderFile(
   params: Params
 ): Promise<Reader> {
   const file = await open(path);
-  const result = await renderInternal(file, params);
+  const template = await compile(file);
   file.close();
-  return result;
+  return template(params);
 }
