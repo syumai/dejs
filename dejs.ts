@@ -130,5 +130,7 @@ export async function renderFile(
   params: Params
 ): Promise<Reader> {
   const file = await open(path);
-  return await renderInternal(file, params);
+  const result = await renderInternal(file, params);
+  file.close();
+  return result;
 }
