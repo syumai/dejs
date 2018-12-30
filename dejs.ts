@@ -32,11 +32,11 @@ enum Codes {
 }
 
 interface Template {
-  (params: Params): Promise<Reader>;
+  (params: Params): Reader;
 }
 
 function NewTemplate(script: string): Template {
-  return async function(params: Params): Promise<Reader> {
+  return (params: Params): Reader => {
     for (const [k, v] of Object.entries(params)) {
       window[k] = v;
     }

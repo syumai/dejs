@@ -23,7 +23,7 @@
 - `render(body: string, params: Params): Promise<Reader>`
   - render from string
 - `compile(reader: Reader): Promise<Template>`
-  - only compiles ejs and returns `Template(params: Params): Promise<Reader>`
+  - only compiles ejs and returns `Template(params: Params): Reader`
   - use this to cache compiled result of ejs
 
 ### Render from file
