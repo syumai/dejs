@@ -18,6 +18,13 @@
 
 ## Usage
 
+- renderFile
+  - render from file
+- render
+  - render from string
+
+### Render from file
+
 - template.ejs
 
 ```ejs
@@ -35,6 +42,36 @@ import { renderFile } from 'https://syumai.github.io/dejs/dejs.ts';
 
 (async () => {
   const output = await renderFile(`${cwd()}/template.ejs`, {
+    name: 'world',
+  });
+  await copy(stdout, output);
+})();
+```
+
+- console
+
+```sh
+$ deno index.ts
+<body>
+    <h1>hello, world!</h1>
+</body>
+```
+
+### Render from string
+
+- index.ts
+
+```ts
+import { cwd, stdout, copy } from 'deno';
+import { render } from 'https://syumai.github.io/dejs/dejs.ts';
+
+const template = `<body>
+  <h1>hello, <%= name %>!</h1>
+  <%# Example comment %>
+</body>`;
+
+(async () => {
+  const output = await render(template, {
     name: 'world',
   });
   await copy(stdout, output);
