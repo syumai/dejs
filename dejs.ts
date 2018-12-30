@@ -1,5 +1,6 @@
 import { Reader, open, Buffer } from 'deno';
 import { stringsReader } from 'https://deno.land/x/net/util.ts';
+import { BufReader } from 'https://deno.land/x/net/bufio.ts';
 import escape from './escape.ts';
 
 const globalEval = eval;
@@ -54,21 +55,21 @@ function NewTemplate(script: string): Template {
 }
 
 export async function compile(reader: Reader): Promise<Template> {
+  const src = new BufReader(reader);
   const buf: Array<number> = [];
   const statements: Array<string> = [];
   const statementBuf = new Buffer();
-  const readBuf = new Uint8Array(1);
   let readMode: ReadMode = ReadMode.Normal;
   const statementBufWrite = async (byte: number): Promise<number> =>
     await statementBuf.write(new Uint8Array([byte]));
 
   while (true) {
-    const { eof } = await reader.read(readBuf);
-    if (eof) {
+    const byte = await src.readByte();
+    if (byte < 0) {
       break;
     }
 
-    buf.push(readBuf[0]);
+    buf.push(byte);
     if (buf.length < 3) {
       continue;
     }
