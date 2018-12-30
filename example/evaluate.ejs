@@ -3,10 +3,10 @@
     <title>hello</title>
   </head>
   <body>
-    <% for (let i = 0; i < 10; i++) { const name = 'world'; const num = 3; %>
+    <% for (let i = 0; i < 3; i++) { %>
     <div class="row">
-      <% for (let j = 0; j < 10; j++) { %>
-      <div class="cell"><%- name %><%- num %><%= name %></div>
+      <% for (let j = 0; j < 3; j++) { %>
+      <div class="cell"><%- i %>-<%- j %></div>
       <% } %>
     </div>
     <% } %>

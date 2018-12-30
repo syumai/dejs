@@ -10,10 +10,10 @@
 - <%= %> Escaped
 - <%- %> Raw
 - <%# %> Comment
+- <% %> Evaluate (Basic support)
 
 ### Not supported
 
-- <% %> Evaluate
 - All other features of ejs
 
 ## Usage

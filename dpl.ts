@@ -109,8 +109,6 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
   statements.push(`$$OUTPUT.push(\`${statementBuf.toString()}\`);`);
   statementBuf.reset();
 
-  console.log(statements);
-
   for (const [k, v] of Object.entries(params)) {
     window[k] = v;
   }
