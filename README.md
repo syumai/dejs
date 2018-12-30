@@ -32,8 +32,9 @@
 
 ```ejs
 <body>
-  <h1>hello, <%= name %>!</h1>
-  <%# Example comment %>
+  <% if (name) { %>
+    <h1>hello, <%= name %>!</h1>
+  <% } %>
 </body>
 ```
 
@@ -56,22 +57,22 @@ import { renderFile } from 'https://syumai.github.io/dejs/dejs.ts';
 ```sh
 $ deno index.ts
 <body>
-  <h1>hello, world!</h1>
+
+    <h1>hello, world!</h1>
 
 </body>
 ```
 
 ### Render from string
 
-- index.ts
-
 ```ts
 import { cwd, stdout, copy } from 'deno';
 import { render } from 'https://syumai.github.io/dejs/dejs.ts';
 
 const template = `<body>
-  <h1>hello, <%= name %>!</h1>
-  <%# Example comment %>
+  <% if (name) { %>
+    <h1>hello, <%= name %>!</h1>
+  <% } %>
 </body>`;
 
 (async () => {
@@ -80,16 +81,6 @@ const template = `<body>
   });
   await copy(stdout, output);
 })();
-```
-
-- console
-
-```sh
-$ deno index.ts
-<body>
-  <h1>hello, world!</h1>
-
-</body>
 ```
 
 ## Author
