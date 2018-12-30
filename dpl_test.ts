@@ -8,7 +8,7 @@ import escape from './escape.ts';
   interface testCase {
     name: string;
     body: string;
-    param?: string;
+    param?: any;
     expected: string;
   }
 
@@ -35,6 +35,35 @@ import escape from './escape.ts';
       body: '<%# param %>',
       param: '<div>test</div>',
       expected: '',
+    },
+    {
+      name: 'Evaluate if true',
+      body: '<% if (param) { %>test<% } %>',
+      param: true,
+      expected: 'test',
+    },
+    {
+      name: 'Evaluate if false',
+      body: '<% if (param) { %>test<% } %>',
+      param: false,
+      expected: '',
+    },
+    {
+      name: 'Evaluate for',
+      body: '<% for (let i = 0; i < 3; i++) { %>Test<% } %>',
+      expected: 'TestTestTest',
+    },
+    {
+      name: 'Evaluate nested for',
+      body:
+        '<% for (let i = 0; i < 2; i++) { %><% for (let j = 0; j < 2; j++) { %>Test<% } %><% } %>',
+      expected: 'TestTestTestTest',
+    },
+    {
+      name: 'Evaluate if true',
+      body: '<% if (param) { %>test<% } %>',
+      param: true,
+      expected: 'test',
     },
     {
       name: 'Escaped without spacing',
@@ -74,7 +103,7 @@ import escape from './escape.ts';
   interface testCase {
     name: string;
     fileName: string;
-    param?: string;
+    param?: any;
     expected: string;
   }
 

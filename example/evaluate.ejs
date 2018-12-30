@@ -1,0 +1,14 @@
+<html>
+  <head>
+    <title>hello</title>
+  </head>
+  <body>
+    <% for (let i = 0; i < 3; i++) { %>
+    <div class="row">
+      <% for (let j = 0; j < 3; j++) { %>
+      <div class="cell"><%- i %>-<%- j %></div>
+      <% } %>
+    </div>
+    <% } %>
+  </body>
+</html>
