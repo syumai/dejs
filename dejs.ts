@@ -35,9 +35,8 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
   const statementBufWrite = async (byte: number): Promise<number> =>
     await statementBuf.write(new Uint8Array([byte]));
 
-  let eof = false;
-  while (!eof) {
-    ({ eof } = await body.read(readBuf));
+  while (true) {
+    const { eof } = await body.read(readBuf);
     if (eof) {
       break;
     }
