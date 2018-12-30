@@ -1,9 +1,5 @@
 import { Buffer, copy, cwd, stdout, open } from 'deno';
-import {
-  test,
-  assertEqual,
-  assert,
-} from 'https://deno.land/x/testing/testing.ts';
+import { test, assertEqual } from 'https://deno.land/x/testing/testing.ts';
 import * as dpl from './dpl.ts';
 import escape from './escape.ts';
 
