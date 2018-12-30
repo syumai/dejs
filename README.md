@@ -56,7 +56,8 @@ import { renderFile } from 'https://syumai.github.io/dejs/dejs.ts';
 ```sh
 $ deno index.ts
 <body>
-    <h1>hello, world!</h1>
+  <h1>hello, world!</h1>
+
 </body>
 ```
 
@@ -86,7 +87,8 @@ const template = `<body>
 ```sh
 $ deno index.ts
 <body>
-    <h1>hello, world!</h1>
+  <h1>hello, world!</h1>
+
 </body>
 ```
 
