@@ -53,7 +53,7 @@ function NewTemplate(script: string): Template {
   };
 }
 
-export async function compile(body: Reader): Promise<Template> {
+export async function compile(reader: Reader): Promise<Template> {
   const buf: Array<number> = [];
   const statements: Array<string> = [];
   const statementBuf = new Buffer();
@@ -63,7 +63,7 @@ export async function compile(body: Reader): Promise<Template> {
     await statementBuf.write(new Uint8Array([byte]));
 
   while (true) {
-    const { eof } = await body.read(readBuf);
+    const { eof } = await reader.read(readBuf);
     if (eof) {
       break;
     }
@@ -138,9 +138,9 @@ export async function compile(body: Reader): Promise<Template> {
   return NewTemplate(statements.join(''));
 }
 
-export async function render(str: string, params: Params): Promise<Reader> {
-  const body = stringsReader(str);
-  const template = await compile(body);
+export async function render(body: string, params: Params): Promise<Reader> {
+  const reader = stringsReader(body);
+  const template = await compile(reader);
   return template(params);
 }
 
