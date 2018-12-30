@@ -14,6 +14,7 @@ enum ReadMode {
   Escaped,
   Raw,
   Comment,
+  Evaluate,
 }
 
 enum Codes {
@@ -60,7 +61,8 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
             readMode = ReadMode.Comment;
             break;
           default:
-            continue;
+            readMode = ReadMode.Evaluate;
+            break;
         }
         statements.push(`$$OUTPUT.push(\`${statementBuf.toString()}\`);`);
         statementBuf.reset();
@@ -87,6 +89,9 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
             statements.push(
               `$$OUTPUT.push($$ESCAPE(${statementBuf.toString()}));`
             );
+            break;
+          case ReadMode.Evaluate:
+            statements.push(statementBuf.toString());
             break;
         }
       }
