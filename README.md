@@ -1,7 +1,7 @@
-# dpl
+# dejs
 
-- [**d**eno](https://github.com/denoland/deno) tem**pl**ate engine.
-- dpl can render [ejs](https://ejs.co) with _simple rules_.
+- dejs is [ejs](https://ejs.co) engine for [deno](https://github.com/denoland/deno).
+- dejs's render function returns `Reader`.
 
 ## Features
 
@@ -31,10 +31,10 @@
 
 ```ts
 import { cwd, stdout, copy } from 'deno';
-import { render } from 'https://syumai.github.io/dpl/dpl.ts';
+import { renderFile } from 'https://syumai.github.io/dejs/dejs.ts';
 
 (async () => {
-  const output = await render(`${cwd()}/template.ejs`, {
+  const output = await renderFile(`${cwd()}/template.ejs`, {
     name: 'world',
   });
   await copy(stdout, output);

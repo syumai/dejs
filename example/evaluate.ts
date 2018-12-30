@@ -1,7 +1,7 @@
 import { cwd, stdout, copy } from 'deno';
-import { render } from '../dpl.ts';
+import { renderFile } from '../dejs.ts';
 
 (async () => {
-  const output = await render(`${cwd()}/evaluate.ejs`, {});
+  const output = await renderFile(`${cwd()}/evaluate.ejs`, {});
   await copy(stdout, output);
 })();

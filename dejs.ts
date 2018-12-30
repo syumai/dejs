@@ -120,15 +120,15 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
   return stringsReader(String(window.$$OUTPUT.join('')));
 }
 
-export async function renderString(
-  str: string,
-  params: Params
-): Promise<Reader> {
+export async function render(str: string, params: Params): Promise<Reader> {
   const body = stringsReader(str);
   return await renderInternal(body, params);
 }
 
-export async function render(path: string, params: Params): Promise<Reader> {
+export async function renderFile(
+  path: string,
+  params: Params
+): Promise<Reader> {
   const file = await open(path);
   return await renderInternal(file, params);
 }

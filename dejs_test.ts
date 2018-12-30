@@ -1,9 +1,9 @@
-import { Buffer, copy, cwd, stdout, open } from 'deno';
+import { Buffer, copy, cwd } from 'deno';
 import { test, assertEqual } from 'https://deno.land/x/testing/testing.ts';
-import * as dpl from './dpl.ts';
+import * as dejs from './dejs.ts';
 import escape from './escape.ts';
 
-// renderStringTest
+// renderTest
 (() => {
   interface testCase {
     name: string;
@@ -90,7 +90,7 @@ import escape from './escape.ts';
       name: tc.name,
       fn: async () => {
         const buf = new Buffer();
-        await copy(buf, await dpl.renderString(tc.body, { param: tc.param }));
+        await copy(buf, await dejs.render(tc.body, { param: tc.param }));
         const actual = buf.toString();
         assertEqual(actual, tc.expected);
       },
@@ -98,7 +98,7 @@ import escape from './escape.ts';
   }
 })();
 
-// renderTest
+// renderFileTest
 (() => {
   interface testCase {
     name: string;
@@ -128,7 +128,7 @@ import escape from './escape.ts';
         let buf = new Buffer();
         await copy(
           buf,
-          await dpl.render(`${cwd()}/testdata/${tc.fileName}.ejs`, {
+          await dejs.renderFile(`${cwd()}/testdata/${tc.fileName}.ejs`, {
             param: tc.param,
           })
         );
