@@ -1,16 +1,15 @@
 # dejs
 
-- dejs is [ejs](https://ejs.co) template engine for [deno](https://github.com/denoland/deno).
-- dejs's render function returns `Reader`.
+- [ejs](https://ejs.co) template engine for [deno](https://github.com/denoland/deno).
 
 ## Features
 
 ### Supported
 
-- <%= %> Escaped
-- <%- %> Raw
-- <%# %> Comment
-- <% %> Evaluate (Basic support)
+- <%= %> Output escaped value
+- <%- %> Output raw value
+- <%# %> Comment (nothing will be shown)
+- <% %> Evaluate (use control flow like: if, for)
 
 ### Not supported
 
