@@ -76,7 +76,7 @@ async function renderInternal(body: Reader, params: Params): Promise<Reader> {
 
     // Finish current ReadMode
     if (buf[1] === Codes.Percent && buf[2] === Codes.End) {
-      statementBuf.write(new Uint8Array([buf.shift()]));
+      statementBufWrite(buf.shift());
       buf.splice(0);
       // Don't execute if ReadMode is Comment.
       if (readMode !== ReadMode.Comment) {
