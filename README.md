@@ -17,6 +17,10 @@
 
 ## Usage
 
+```ts
+import * as dejs from 'https://deno.land/x/dejs@0.1.1/dejs.ts';
+```
+
 - `renderFile(filePath: string, params: Params): Promise<Reader>`
   - render from file
 - `render(body: string, params: Params): Promise<Reader>`
@@ -41,7 +45,7 @@
 
 ```ts
 import { cwd, stdout, copy } from 'deno';
-import { renderFile } from 'https://syumai.github.io/dejs/dejs.ts';
+import { renderFile } from 'https://deno.land/x/dejs/dejs.ts';
 
 (async () => {
   const output = await renderFile(`${cwd()}/template.ejs`, {
@@ -66,7 +70,7 @@ $ deno index.ts
 
 ```ts
 import { cwd, stdout, copy } from 'deno';
-import { render } from 'https://syumai.github.io/dejs/dejs.ts';
+import { render } from 'https://deno.land/x/dejs/dejs.ts';
 
 const template = `<body>
   <% if (name) { %>
