@@ -1,5 +1,7 @@
 # dejs
 
+[![Build Status](https://travis-ci.org/syumai/dejs.svg?branch=master)](https://travis-ci.org/syumai/dejs)
+
 - [ejs](https://ejs.co) template engine for [deno](https://github.com/denoland/deno).
 
 ## Features
