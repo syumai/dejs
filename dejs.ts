@@ -36,21 +36,34 @@ interface Template {
   (params: Params): Reader;
 }
 
+function genRandomID(): string {
+  return (
+    Math.random()
+      .toString(36)
+      .substring(2) +
+    Math.random()
+      .toString(36)
+      .substring(2)
+  );
+}
+
 function NewTemplate(script: string): Template {
   return (params: Params): Reader => {
-    for (const [k, v] of Object.entries(params)) {
-      window[k] = v;
-    }
-    window.$$OUTPUT = [];
+    const scopeID = '$$' + genRandomID();
+    const scope = {
+      $$OUTPUT: [],
+      ...params,
+    };
+    window[scopeID] = scope;
 
-    globalEval(script);
+    const header = Object.keys(scope)
+      .map(k => `const ${k} = ${scopeID}.${k};`)
+      .join('\n');
 
-    const reader = stringsReader(String(window.$$OUTPUT.join('')));
-    for (const k of Object.keys(params)) {
-      delete window[k];
-    }
-    delete window.$$OUTPUT;
-    return reader;
+    globalEval(header + script);
+
+    delete window[scopeID];
+    return stringsReader(scope.$$OUTPUT.join(''));
   };
 }
 
