@@ -63,7 +63,7 @@ function NewTemplate(script: string): Template {
         ...params,
         $$OUTPUT: output,
         include,
-        onFinish: resolve,
+        $$FINISHED: resolve,
       };
       window[scopeID] = scope;
 
@@ -74,7 +74,7 @@ function NewTemplate(script: string): Template {
       const src = `(async() => {
         ${header}
         ${script}
-        onFinish();
+        $$FINISHED();
       })();`;
       globalEval(src);
     });
