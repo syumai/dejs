@@ -119,6 +119,12 @@ import escape from './escape.ts';
       param: '<div>test</div>',
       expected: '<div>test</div>',
     },
+    {
+      name: 'Include',
+      fileName: 'include',
+      param: '<div>test</div>',
+      expected: '<div>test</div>',
+    },
   ];
 
   for (const tc of testCases) {

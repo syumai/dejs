@@ -12,6 +12,7 @@
 - <%- %> Output raw value
 - <%# %> Comment (nothing will be shown)
 - <% %> Evaluate (use control flow like: if, for)
+- include other ejs template
 
 ### Not supported
 
@@ -86,6 +87,71 @@ const template = `<body>
   });
   await copy(stdout, output);
 })();
+```
+
+### Include other ejs template
+
+- To include template from other file, use `include` function in ejs.
+- `include` resolves views from relative path from **executed ts / js file**. (not from ejs template file).
+  - This behavior may change in the future.
+
+#### Usage
+
+```ejs
+await include(filePath, params)
+```
+
+#### Example
+
+- views/header.ejs
+
+```ejs
+<html>
+<head>
+  <title><%- title %></title>
+</head>
+<body>
+```
+
+- views/footer.ejs
+
+```ejs
+</body>
+</html>
+```
+
+- views/main.ejs
+
+```
+<%- await include('views/header.ejs', { title: 'include example' }) %>
+<h1>hello, world!</h1>
+<%- await include('views/footer.ejs') %>
+```
+
+- index.ts
+
+```ts
+import { cwd, stdout, copy } from 'deno';
+import { renderFile } from 'https://deno.land/x/dejs/dejs.ts';
+
+(async () => {
+  const output = await renderFile(`${cwd()}/views/main.ejs`);
+  await copy(stdout, output);
+})();
+```
+
+- console
+
+```sh
+$ deno index.ts
+<html>
+<head>
+  <title><%- title %></title>
+</head>
+<body>
+<h1>hello, world!</h1>
+</body>
+</html>
 ```
 
 ## Author

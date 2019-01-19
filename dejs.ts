@@ -33,7 +33,7 @@ enum Codes {
 }
 
 interface Template {
-  (params: Params): Reader;
+  (params: Params): Promise<Reader>;
 }
 
 function genRandomID(): string {
@@ -47,23 +47,40 @@ function genRandomID(): string {
   );
 }
 
+async function include(path: string, params: Params): Promise<string> {
+  const result = await renderFile(path, params);
+  const buf = new Buffer();
+  await buf.readFrom(result);
+  return buf.toString();
+}
+
 function NewTemplate(script: string): Template {
-  return (params: Params): Reader => {
+  return async (params: Params): Promise<Reader> => {
+    const output: Array<string> = [];
     const scopeID = '$$' + genRandomID();
-    const scope = {
-      $$OUTPUT: [],
-      ...params,
-    };
-    window[scopeID] = scope;
+    await new Promise(resolve => {
+      const scope = {
+        ...params,
+        $$OUTPUT: output,
+        include,
+        onFinish: resolve,
+      };
+      window[scopeID] = scope;
 
-    const header = Object.keys(scope)
-      .map(k => `const ${k} = ${scopeID}.${k};`)
-      .join('\n');
+      const header = Object.keys(scope)
+        .map(k => `const ${k} = ${scopeID}.${k};`)
+        .join('\n');
 
-    globalEval(header + script);
+      const src = `(async() => {
+        ${header}
+        ${script}
+        onFinish();
+      })();`;
+      globalEval(src);
+    });
 
     delete window[scopeID];
-    return stringsReader(scope.$$OUTPUT.join(''));
+    return stringsReader(output.join(''));
   };
 }
 
@@ -149,7 +166,7 @@ export async function compile(reader: Reader): Promise<Template> {
   statements.push(`$$OUTPUT.push(\`${statementBuf.toString()}\`);`);
   statementBuf.reset();
 
-  return NewTemplate(statements.join(''));
+  return await NewTemplate(statements.join(''));
 }
 
 export async function render(body: string, params: Params): Promise<Reader> {
