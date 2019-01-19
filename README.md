@@ -146,7 +146,7 @@ import { renderFile } from 'https://deno.land/x/dejs/dejs.ts';
 $ deno index.ts
 <html>
 <head>
-  <title><%- title %></title>
+  <title>include example</title>
 </head>
 <body>
 <h1>hello, world!</h1>
