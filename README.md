@@ -12,7 +12,7 @@
 - <%- %> Output raw value
 - <%# %> Comment (nothing will be shown)
 - <% %> Evaluate (use control flow like: if, for)
-- include other ejs template
+- include partial ejs template
 
 ### Not supported
 
@@ -21,7 +21,7 @@
 ## Usage
 
 ```ts
-import * as dejs from 'https://deno.land/x/dejs@0.1.1/dejs.ts';
+import * as dejs from 'https://deno.land/x/dejs@0.1.2/dejs.ts';
 ```
 
 - `renderFile(filePath: string, params: Params): Promise<Reader>`
@@ -89,7 +89,7 @@ const template = `<body>
 })();
 ```
 
-### Include other ejs template
+### Include partial ejs template
 
 - To include template from other file, use `include` function in ejs.
 - `include` resolves views from relative path from **executed ts / js file**. (not from ejs template file).
