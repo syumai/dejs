@@ -1,5 +1,9 @@
 import { Buffer, copy, cwd } from 'deno';
-import { test, assertEqual } from 'https://deno.land/x/testing/mod.ts';
+import {
+  test,
+  assertEqual,
+  runTests,
+} from 'https://deno.land/x/testing/mod.ts';
 import * as dejs from './dejs.ts';
 import escape from './escape.ts';
 
@@ -144,3 +148,5 @@ import escape from './escape.ts';
     });
   }
 })();
+
+runTests();
