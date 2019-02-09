@@ -154,6 +154,12 @@ $ deno index.ts
 </html>
 ```
 
+## Development
+
+### Testing
+
+- Run `make test`.
+
 ## Author
 
 syumai
