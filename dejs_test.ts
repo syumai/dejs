@@ -5,7 +5,7 @@ import {
   runTests,
 } from 'https://deno.land/x/testing/mod.ts';
 import * as dejs from './dejs.ts';
-import escape from './escape.ts';
+import escape from 'https://deno.land/x/lodash/escape.js';
 
 // renderTest
 (() => {
