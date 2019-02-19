@@ -1,4 +1,4 @@
-import { cwd, stdout, copy } from 'deno';
+const { cwd, stdout, copy } = Deno;
 import { renderFile } from '../dejs.ts';
 
 (async () => {

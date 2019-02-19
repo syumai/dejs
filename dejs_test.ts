@@ -1,4 +1,4 @@
-import { Buffer, copy, cwd } from 'deno';
+const { Buffer, copy, cwd } = Deno;
 import {
   test,
   assertEqual,
