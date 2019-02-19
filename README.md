@@ -47,7 +47,7 @@ import * as dejs from 'https://deno.land/x/dejs@0.1.4/dejs.ts';
 - index.ts
 
 ```ts
-import { cwd, stdout, copy } from 'deno';
+const { cwd, stdout, copy } = Deno;
 import { renderFile } from 'https://deno.land/x/dejs/dejs.ts';
 
 (async () => {
@@ -72,7 +72,7 @@ $ deno index.ts
 ### Render from string
 
 ```ts
-import { cwd, stdout, copy } from 'deno';
+const { cwd, stdout, copy } = Deno;
 import { render } from 'https://deno.land/x/dejs/dejs.ts';
 
 const template = `<body>
@@ -131,7 +131,7 @@ await include(filePath, params)
 - index.ts
 
 ```ts
-import { cwd, stdout, copy } from 'deno';
+const { cwd, stdout, copy } = Deno;
 import { renderFile } from 'https://deno.land/x/dejs/dejs.ts';
 
 (async () => {
