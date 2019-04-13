@@ -1,4 +1,4 @@
 .PHONY: test
 
 test:
-	deno dejs_test.ts --allow-read
+	deno --allow-read dejs_test.ts
