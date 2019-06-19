@@ -1,7 +1,7 @@
 const { open, Buffer } = Deno;
 import Reader = Deno.Reader;
-import { stringsReader } from 'https://deno.land/x/io/util.ts';
-import { BufReader, EOF } from 'https://deno.land/x/io/bufio.ts';
+import { stringsReader } from 'https://deno.land/std/io/util.ts';
+import { BufReader, EOF } from 'https://deno.land/std/io/bufio.ts';
 import escape from 'https://deno.land/x/lodash/escape.js';
 
 const globalEval = eval;
