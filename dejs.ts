@@ -1,7 +1,7 @@
 const { open, Buffer } = Deno;
-import Reader = Deno.Reader;
+type Reader = Deno.Reader;
 import { stringsReader } from 'https://deno.land/std/io/util.ts';
-import { BufReader, EOF } from 'https://deno.land/std/io/bufio.ts';
+import { BufReader } from 'https://deno.land/std/io/bufio.ts';
 import escape from 'https://deno.land/x/lodash/escape.js';
 
 const globalEval = eval;
@@ -96,7 +96,7 @@ export async function compile(reader: Reader): Promise<Template> {
 
   while (true) {
     const byte = await src.readByte();
-    if (byte === EOF) {
+    if (byte === Deno.EOF) {
       break;
     }
 
