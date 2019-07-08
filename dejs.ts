@@ -128,14 +128,14 @@ export async function compile(reader: Reader): Promise<Template> {
         continue;
       }
       if (buf.length > 2) {
-        await statementBufWrite(buf.shift());
+        await statementBufWrite(buf.shift() as number);
       }
       continue;
     }
 
     // Finish current ReadMode
     if (buf[1] === Codes.Percent && buf[2] === Codes.End) {
-      statementBufWrite(buf.shift());
+      statementBufWrite(buf.shift() as number);
       buf.splice(0);
       // Don't execute if ReadMode is Comment.
       if (readMode !== ReadMode.Comment) {
@@ -157,12 +157,12 @@ export async function compile(reader: Reader): Promise<Template> {
       readMode = ReadMode.Normal;
       continue;
     }
-    await statementBufWrite(buf.shift());
+    await statementBufWrite(buf.shift() as number);
   }
 
   // Flush buffer
   while (buf.length > 0) {
-    await statementBufWrite(buf.shift());
+    await statementBufWrite(buf.shift() as number);
   }
   statements.push(`$$OUTPUT.push(\`${statementBuf.toString()}\`);`);
   statementBuf.reset();
