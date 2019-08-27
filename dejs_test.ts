@@ -1,7 +1,7 @@
 const { Buffer, copy, cwd } = Deno;
 import { test, runTests } from 'https://deno.land/std/testing/mod.ts';
 import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
-import * as dejs from './dejs.ts';
+import * as dejs from './mod.ts';
 import escape from 'https://deno.land/x/lodash/escape.js';
 
 // renderTest
