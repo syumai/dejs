@@ -1,4 +1,4 @@
 .PHONY: test
 
 test:
-	deno -c ./testdata/tsconfig.json --allow-read dejs_test.ts
+	deno -c ./testdata/tsconfig.json --allow-read mod_test.ts
