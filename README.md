@@ -21,7 +21,7 @@
 ## Usage
 
 ```ts
-import * as dejs from 'https://deno.land/x/dejs@0.3.0/dejs.ts';
+import * as dejs from 'https://deno.land/x/dejs@0.3.0/mod.ts';
 ```
 
 - `renderFile(filePath: string, params: Params): Promise<Reader>`
@@ -48,7 +48,7 @@ import * as dejs from 'https://deno.land/x/dejs@0.3.0/dejs.ts';
 
 ```ts
 const { cwd, stdout, copy } = Deno;
-import { renderFile } from 'https://deno.land/x/dejs/dejs.ts';
+import { renderFile } from 'https://deno.land/x/dejs/mod.ts';
 
 (async () => {
   const output = await renderFile(`${cwd()}/template.ejs`, {
@@ -73,7 +73,7 @@ $ deno index.ts
 
 ```ts
 const { cwd, stdout, copy } = Deno;
-import { render } from 'https://deno.land/x/dejs/dejs.ts';
+import { render } from 'https://deno.land/x/dejs/mod.ts';
 
 const template = `<body>
   <% if (name) { %>
@@ -132,7 +132,7 @@ await include(filePath, params)
 
 ```ts
 const { cwd, stdout, copy } = Deno;
-import { renderFile } from 'https://deno.land/x/dejs/dejs.ts';
+import { renderFile } from 'https://deno.land/x/dejs/mod.ts';
 
 (async () => {
   const output = await renderFile(`${cwd()}/views/main.ejs`);
