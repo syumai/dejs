@@ -3,6 +3,7 @@ type Reader = Deno.Reader;
 import { stringsReader } from 'https://deno.land/std/io/util.ts';
 import { BufReader } from 'https://deno.land/std/io/bufio.ts';
 import escape from 'https://deno.land/x/lodash/escape.js';
+import uuid from 'https://deno.land/std/uuid/mod.ts';
 
 const globalEval = eval;
 const window = globalEval('this');
@@ -38,14 +39,7 @@ interface Template {
 }
 
 function genRandomID(): string {
-  return (
-    Math.random()
-      .toString(36)
-      .substring(2) +
-    Math.random()
-      .toString(36)
-      .substring(2)
-  );
+  return uuid().replace(/-/g, '');
 }
 
 async function include(path: string, params: Params): Promise<string> {
