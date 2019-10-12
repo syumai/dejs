@@ -6,7 +6,12 @@ import escape from 'https://deno.land/x/lodash/escape.js';
 import uuid from 'https://deno.land/std/uuid/mod.ts';
 
 const globalEval = eval;
-const window = globalEval('this');
+
+declare const $$SCOPE: { [key: string]: any };
+Object.defineProperty(window, '$$SCOPE', {
+  value: {},
+  writable: false,
+});
 
 Object.defineProperty(window, '$$ESCAPE', {
   value: escape,
@@ -60,10 +65,10 @@ function NewTemplate(script: string): Template {
         include,
         $$FINISHED: resolve,
       };
-      window[scopeID] = scope;
+      $$SCOPE[scopeID] = scope;
 
       const header = Object.keys(scope)
-        .map(k => `const ${k} = ${scopeID}.${k};`)
+        .map(k => `const ${k} = $$SCOPE.${scopeID}.${k};`)
         .join('\n');
 
       const src = `(async() => {
@@ -74,7 +79,7 @@ function NewTemplate(script: string): Template {
       globalEval(src);
     });
 
-    delete window[scopeID];
+    delete $$SCOPE[scopeID];
     return stringsReader(output.join(''));
   };
 }
