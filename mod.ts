@@ -3,20 +3,6 @@ type Reader = Deno.Reader;
 import { stringsReader } from 'https://deno.land/std/io/util.ts';
 import { BufReader } from 'https://deno.land/std/io/bufio.ts';
 import escape from 'https://deno.land/x/lodash/escape.js';
-import uuid from 'https://deno.land/std/uuid/mod.ts';
-
-const globalEval = eval;
-
-declare const $$SCOPE: { [key: string]: any };
-Object.defineProperty(window, '$$SCOPE', {
-  value: {},
-  writable: false,
-});
-
-Object.defineProperty(window, '$$ESCAPE', {
-  value: escape,
-  writable: false,
-});
 
 export interface Params {
   [key: string]: any;
@@ -43,10 +29,6 @@ interface Template {
   (params: Params): Promise<Reader>;
 }
 
-function genRandomID(): string {
-  return uuid().replace(/-/g, '');
-}
-
 async function include(path: string, params: Params): Promise<string> {
   const result = await renderFile(path, params);
   const buf = new Buffer();
@@ -57,29 +39,24 @@ async function include(path: string, params: Params): Promise<string> {
 function NewTemplate(script: string): Template {
   return async (params: Params): Promise<Reader> => {
     const output: Array<string> = [];
-    const scopeID = '$$' + genRandomID();
     await new Promise(resolve => {
-      const scope = {
+      const $$CONSTANTS = {
         ...params,
-        $$OUTPUT: output,
         include,
+        $$OUTPUT: output,
         $$FINISHED: resolve,
+        $$ESCAPE: escape,
       };
-      $$SCOPE[scopeID] = scope;
-
-      const header = Object.keys(scope)
-        .map(k => `const ${k} = $$SCOPE.${scopeID}.${k};`)
+      const header = Object.keys($$CONSTANTS)
+        .map(k => `const ${k} = $$CONSTANTS.${k};`)
         .join('\n');
-
       const src = `(async() => {
         ${header}
         ${script}
         $$FINISHED();
       })();`;
-      globalEval(src);
+      eval(src);
     });
-
-    delete $$SCOPE[scopeID];
     return stringsReader(output.join(''));
   };
 }
