@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "modules": [
+    {
+      "protocol": "https",
+      "path": "deno.land/std",
+      "version": "v0.27.0",
+      "files": [
+        "/io/bufio.ts",
+        "/io/util.ts",
+        "/testing/asserts.ts",
+        "/testing/mod.ts"
+      ]
+    },
+    {
+      "protocol": "https",
+      "path": "deno.land/x/lodash",
+      "version": "4.17.15-es",
+      "files": [
+        "/escape.js"
+      ]
+    }
+  ]
+}

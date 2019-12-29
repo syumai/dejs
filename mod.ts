@@ -1,8 +1,8 @@
 const { open, Buffer } = Deno;
 type Reader = Deno.Reader;
-import { stringsReader } from 'https://deno.land/std/io/util.ts';
-import { BufReader } from 'https://deno.land/std/io/bufio.ts';
-import escape from 'https://deno.land/x/lodash/escape.js';
+import { stringsReader } from './vendor/https/deno.land/std/io/util.ts';
+import { BufReader } from './vendor/https/deno.land/std/io/bufio.ts';
+import escape from './vendor/https/deno.land/x/lodash/escape.js';
 
 export interface Params {
   [key: string]: any;
