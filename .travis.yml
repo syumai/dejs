@@ -2,7 +2,6 @@ language: minimal
 
 install:
   - curl -L https://deno.land/x/install/install.sh | bash
-  - export PATH="$HOME/.deno/bin:$PATH"
 
 script:
   - make test
