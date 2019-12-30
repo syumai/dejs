@@ -1,7 +1,0 @@
-language: minimal
-
-install:
-  - curl -L https://deno.land/x/install/install.sh | bash
-
-script:
-  - make test
