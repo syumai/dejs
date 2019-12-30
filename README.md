@@ -1,6 +1,6 @@
 # dejs
 
-[![](https://github.com/syumai/dejs/workflows/test/badge.svg)](https://github.com/syumai/dejs/actions)
+[![Build Status](https://github.com/syumai/dejs/workflows/test/badge.svg?branch=master)](https://github.com/syumai/dejs/actions)
 
 - [ejs](https://ejs.co) template engine for [deno](https://github.com/denoland/deno).
 
