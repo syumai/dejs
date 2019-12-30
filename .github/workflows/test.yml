@@ -1,0 +1,15 @@
+name: test
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Deno environment
+        uses: denolib/setup-deno@v1.1.0
+      - name: Run a one-line script
+        run: make test
