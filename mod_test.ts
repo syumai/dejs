@@ -1,5 +1,4 @@
 const { Buffer, copy, cwd } = Deno;
-import { test, runTests } from './vendor/https/deno.land/std/testing/mod.ts';
 import { assertEquals } from './vendor/https/deno.land/std/testing/asserts.ts';
 import * as dejs from './mod.ts';
 import escape from './vendor/https/deno.land/x/lodash/escape.js';
@@ -87,7 +86,7 @@ import escape from './vendor/https/deno.land/x/lodash/escape.js';
   ];
 
   for (const tc of testCases) {
-    test({
+    Deno.test({
       name: tc.name,
       fn: async () => {
         const buf = new Buffer();
@@ -129,7 +128,7 @@ import escape from './vendor/https/deno.land/x/lodash/escape.js';
   ];
 
   for (const tc of testCases) {
-    test({
+    Deno.test({
       name: tc.name,
       fn: async () => {
         let buf = new Buffer();
@@ -146,4 +145,4 @@ import escape from './vendor/https/deno.land/x/lodash/escape.js';
   }
 })();
 
-runTests();
+Deno.runTests();
