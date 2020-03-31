@@ -8,8 +8,7 @@
       "files": [
         "/io/bufio.ts",
         "/io/util.ts",
-        "/testing/asserts.ts",
-        "/testing/mod.ts"
+        "/testing/asserts.ts"
       ]
     },
     {
