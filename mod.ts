@@ -1,8 +1,8 @@
-const { open, Buffer } = Deno;
+const { open } = Deno;
 type Reader = Deno.Reader;
-import { stringsReader } from './vendor/https/deno.land/std/io/util.ts';
-import { BufReader } from './vendor/https/deno.land/std/io/bufio.ts';
-import escape from './vendor/https/deno.land/x/lodash/escape.js';
+import { stringsReader } from "./vendor/https/deno.land/std/io/util.ts";
+import { BufReader } from "./vendor/https/deno.land/std/io/bufio.ts";
+import escape from "./vendor/https/deno.land/x/lodash/escape.js";
 
 export interface Params {
   [key: string]: any;
@@ -29,17 +29,23 @@ interface Template {
   (params: Params): Promise<Reader>;
 }
 
+const decoder = new TextDecoder("utf-8");
+
 async function include(path: string, params: Params): Promise<string> {
   const result = await renderFile(path, params);
-  const buf = new Buffer();
+  const buf = new Deno.Buffer();
   await buf.readFrom(result);
-  return buf.toString();
+  return await bufToStr(buf);
+}
+
+async function bufToStr(buf: Deno.Buffer): Promise<string> {
+  return decoder.decode(await Deno.readAll(buf));
 }
 
 function NewTemplate(script: string): Template {
   return async (params: Params): Promise<Reader> => {
     const output: Array<string> = [];
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       const $$CONSTANTS = {
         ...params,
         include,
@@ -48,8 +54,8 @@ function NewTemplate(script: string): Template {
         $$ESCAPE: escape,
       };
       const header = Object.keys($$CONSTANTS)
-        .map(k => `const ${k} = $$CONSTANTS.${k};`)
-        .join('\n');
+        .map((k) => `const ${k} = $$CONSTANTS.${k};`)
+        .join("\n");
       const src = `(async() => {
         ${header}
         ${script}
@@ -57,7 +63,7 @@ function NewTemplate(script: string): Template {
       })();`;
       eval(src);
     });
-    return stringsReader(output.join(''));
+    return stringsReader(output.join(""));
   };
 }
 
@@ -65,14 +71,14 @@ export async function compile(reader: Reader): Promise<Template> {
   const src = new BufReader(reader);
   const buf: Array<number> = [];
   const statements: Array<string> = [];
-  const statementBuf = new Buffer();
+  const statementBuf = new Deno.Buffer();
   let readMode: ReadMode = ReadMode.Normal;
   const statementBufWrite = async (byte: number): Promise<number> =>
     await statementBuf.write(new Uint8Array([byte]));
 
   while (true) {
     const byte = await src.readByte();
-    if (byte === Deno.EOF) {
+    if (byte === null) {
       break;
     }
 
@@ -98,7 +104,7 @@ export async function compile(reader: Reader): Promise<Template> {
             readMode = ReadMode.Evaluate;
             break;
         }
-        statements.push(`$$OUTPUT.push(\`${statementBuf.toString()}\`);`);
+        statements.push(`$$OUTPUT.push(\`${await bufToStr(statementBuf)}\`);`);
         statementBuf.reset();
         buf.splice(0);
         continue;
@@ -117,15 +123,15 @@ export async function compile(reader: Reader): Promise<Template> {
       if (readMode !== ReadMode.Comment) {
         switch (readMode) {
           case ReadMode.Raw:
-            statements.push(`$$OUTPUT.push(${statementBuf.toString()});`);
+            statements.push(`$$OUTPUT.push(${await bufToStr(statementBuf)});`);
             break;
           case ReadMode.Escaped:
             statements.push(
-              `$$OUTPUT.push($$ESCAPE(${statementBuf.toString()}));`
+              `$$OUTPUT.push($$ESCAPE(${await bufToStr(statementBuf)}));`,
             );
             break;
           case ReadMode.Evaluate:
-            statements.push(statementBuf.toString());
+            statements.push(await bufToStr(statementBuf));
             break;
         }
       }
@@ -140,10 +146,10 @@ export async function compile(reader: Reader): Promise<Template> {
   while (buf.length > 0) {
     await statementBufWrite(buf.shift() as number);
   }
-  statements.push(`$$OUTPUT.push(\`${statementBuf.toString()}\`);`);
+  statements.push(`$$OUTPUT.push(\`${await bufToStr(statementBuf)}\`);`);
   statementBuf.reset();
 
-  return await NewTemplate(statements.join(''));
+  return await NewTemplate(statements.join(""));
 }
 
 export async function render(body: string, params: Params): Promise<Reader> {
@@ -154,7 +160,7 @@ export async function render(body: string, params: Params): Promise<Reader> {
 
 export async function renderFile(
   path: string,
-  params: Params
+  params: Params,
 ): Promise<Reader> {
   const file = await open(path);
   const template = await compile(file);
