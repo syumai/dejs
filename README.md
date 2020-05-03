@@ -156,9 +156,25 @@ $ deno index.ts
 
 ## Development
 
+### Update modules
+
+- Please use [dem](https://github.com/syumai/dem)
+
+```
+dem update https://deno.land/std@v0.xx.x
+```
+
+### Lint
+
+- `make lint`
+
+### Format
+
+- `make fmt`
+
 ### Testing
 
-- Run `make test`.
+- `make test`
 
 ## Author
 
