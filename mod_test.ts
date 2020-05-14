@@ -85,6 +85,12 @@ const decoder = new TextDecoder("utf-8");
       param: "<div>test</div>",
       expected: "",
     },
+    {
+      name: "Security: Includes JavaScript",
+      body: "<%= param %>console.log(`${param}`)\\\\",
+      param: "test",
+      expected: "testconsole.log(`${param}`)", // Trims backslashes at line end.
+    },
   ];
 
   for (const tc of testCases) {
