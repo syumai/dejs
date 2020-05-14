@@ -28,10 +28,12 @@ import * as dejs from 'https://deno.land/x/dejs@0.6.0/mod.ts';
   - renders from file, outputs Deno.Reader
 - `render(body: string, params: Params): Promise<Deno.Reader>`
   - renders from string, outputs Deno.Reader
+
 - `renderFileToString(filePath: string, params: Params): Promise<string>`
   - renders from file, outputs string
-- `render(body: string, params: Params): Promise<string>`
+- `renderToString(body: string, params: Params): Promise<string>`
   - renders from string, outputs string
+
 - `compile(reader: Reader): Promise<Template>`
   - only compiles ejs and returns `Template(params: Params): string`
   - use this to cache compiled result of ejs
