@@ -46,22 +46,19 @@ function NewTemplate(script: string): Template {
   return async (params: Params): Promise<Reader> => {
     const output: Array<string> = [];
     await new Promise((resolve) => {
-      const $$CONSTANTS = {
+      const args = {
         ...params,
         include,
         $$OUTPUT: output,
         $$FINISHED: resolve,
         $$ESCAPE: escape,
       };
-      const header = Object.keys($$CONSTANTS)
-        .map((k) => `const ${k} = $$CONSTANTS.${k};`)
-        .join("\n");
       const src = `(async() => {
-        ${header}
         ${script}
         $$FINISHED();
       })();`;
-      eval(src);
+      const f = new Function(...Object.keys(args), src);
+      f(...Object.values(args));
     });
     return stringsReader(output.join(""));
   };
