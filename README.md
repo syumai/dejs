@@ -154,6 +154,10 @@ $ deno index.ts
 </html>
 ```
 
+## Limitations
+
+- backslashes at line end will removed.
+
 ## Development
 
 ### Update modules

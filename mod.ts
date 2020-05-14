@@ -35,11 +35,18 @@ async function include(path: string, params: Params): Promise<string> {
   const result = await renderFile(path, params);
   const buf = new Deno.Buffer();
   await buf.readFrom(result);
-  return await bufToStr(buf);
+  return await bufToStrWithSanitize(buf);
 }
 
-async function bufToStr(buf: Deno.Buffer): Promise<string> {
-  return decoder.decode(await Deno.readAll(buf));
+function sanitize(str: string): string {
+  return str
+    .replace(/\`/g, "\\\`")
+    .replace(/\$/g, "\\\$")
+    .replace(/\\+$/, ""); // Trim backslashes at line end. TODO: Fix this to render backslashes.
+}
+
+async function bufToStrWithSanitize(buf: Deno.Buffer): Promise<string> {
+  return sanitize(decoder.decode(await Deno.readAll(buf)));
 }
 
 function NewTemplate(script: string): Template {
@@ -101,7 +108,9 @@ export async function compile(reader: Reader): Promise<Template> {
             readMode = ReadMode.Evaluate;
             break;
         }
-        statements.push(`$$OUTPUT.push(\`${await bufToStr(statementBuf)}\`);`);
+        statements.push(
+          `;$$OUTPUT.push(\`${await bufToStrWithSanitize(statementBuf)}\`);`,
+        );
         statementBuf.reset();
         buf.splice(0);
         continue;
@@ -120,15 +129,19 @@ export async function compile(reader: Reader): Promise<Template> {
       if (readMode !== ReadMode.Comment) {
         switch (readMode) {
           case ReadMode.Raw:
-            statements.push(`$$OUTPUT.push(${await bufToStr(statementBuf)});`);
+            statements.push(
+              `;$$OUTPUT.push(${await bufToStrWithSanitize(statementBuf)});`,
+            );
             break;
           case ReadMode.Escaped:
             statements.push(
-              `$$OUTPUT.push($$ESCAPE(${await bufToStr(statementBuf)}));`,
+              `;$$OUTPUT.push($$ESCAPE(${await bufToStrWithSanitize(
+                statementBuf,
+              )}));`,
             );
             break;
           case ReadMode.Evaluate:
-            statements.push(await bufToStr(statementBuf));
+            statements.push(await bufToStrWithSanitize(statementBuf));
             break;
         }
       }
@@ -143,7 +156,9 @@ export async function compile(reader: Reader): Promise<Template> {
   while (buf.length > 0) {
     await statementBufWrite(buf.shift() as number);
   }
-  statements.push(`$$OUTPUT.push(\`${await bufToStr(statementBuf)}\`);`);
+  statements.push(
+    `$$OUTPUT.push(\`${await bufToStrWithSanitize(statementBuf)}\`);`,
+  );
   statementBuf.reset();
 
   return await NewTemplate(statements.join(""));
