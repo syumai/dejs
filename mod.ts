@@ -26,7 +26,7 @@ enum Codes {
 }
 
 interface Template {
-  (params: Params): Promise<Reader>;
+  (params: Params): Promise<string>;
 }
 
 const decoder = new TextDecoder("utf-8");
@@ -35,7 +35,7 @@ async function include(path: string, params: Params): Promise<string> {
   const result = await renderFile(path, params);
   const buf = new Deno.Buffer();
   await buf.readFrom(result);
-  return await bufToStrWithSanitize(buf);
+  return await bufToStr(buf);
 }
 
 function sanitize(str: string): string {
@@ -45,12 +45,16 @@ function sanitize(str: string): string {
     .replace(/\\+$/, ""); // Trim backslashes at line end. TODO: Fix this to render backslashes.
 }
 
+async function bufToStr(buf: Deno.Buffer): Promise<string> {
+  return decoder.decode(await Deno.readAll(buf));
+}
+
 async function bufToStrWithSanitize(buf: Deno.Buffer): Promise<string> {
-  return sanitize(decoder.decode(await Deno.readAll(buf)));
+  return sanitize(await bufToStr(buf));
 }
 
 function NewTemplate(script: string): Template {
-  return async (params: Params): Promise<Reader> => {
+  return async (params: Params): Promise<string> => {
     const output: Array<string> = [];
     await new Promise((resolve) => {
       const args = {
@@ -67,7 +71,7 @@ function NewTemplate(script: string): Template {
       const f = new Function(...Object.keys(args), src);
       f(...Object.values(args));
     });
-    return stringsReader(output.join(""));
+    return output.join("");
   };
 }
 
@@ -164,18 +168,34 @@ export async function compile(reader: Reader): Promise<Template> {
   return await NewTemplate(statements.join(""));
 }
 
-export async function render(body: string, params: Params): Promise<Reader> {
+export async function renderToString(
+  body: string,
+  params: Params,
+): Promise<string> {
   const reader = stringsReader(body);
   const template = await compile(reader);
   return template(params);
+}
+
+export async function renderFileToString(
+  path: string,
+  params: Params,
+): Promise<string> {
+  const file = await open(path);
+  const template = await compile(file);
+  file.close();
+  return template(params);
+}
+
+export async function render(body: string, params: Params): Promise<Reader> {
+  const result = await renderToString(body, params);
+  return stringsReader(result);
 }
 
 export async function renderFile(
   path: string,
   params: Params,
 ): Promise<Reader> {
-  const file = await open(path);
-  const template = await compile(file);
-  file.close();
-  return template(params);
+  const result = await renderFileToString(path, params);
+  return stringsReader(result);
 }
