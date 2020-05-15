@@ -58,7 +58,7 @@ import { renderFile } from 'https://deno.land/x/dejs/mod.ts';
   const output = await renderFile(`${cwd()}/template.ejs`, {
     name: 'world',
   });
-  await copy(stdout, output);
+  await copy(output, stdout);
 })();
 ```
 
@@ -89,7 +89,7 @@ const template = `<body>
   const output = await render(template, {
     name: 'world',
   });
-  await copy(stdout, output);
+  await copy(output, stdout);
 })();
 ```
 
@@ -140,7 +140,7 @@ import { renderFile } from 'https://deno.land/x/dejs/mod.ts';
 
 (async () => {
   const output = await renderFile(`${cwd()}/views/main.ejs`);
-  await copy(stdout, output);
+  await copy(output, stdout);
 })();
 ```
 
