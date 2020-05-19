@@ -134,7 +134,7 @@ export async function compile(reader: Reader): Promise<Template> {
         switch (readMode) {
           case ReadMode.Raw:
             statements.push(
-              `;$$OUTPUT.push(${await bufToStrWithSanitize(statementBuf)});`,
+              `;$$OUTPUT.push(${await bufToStr(statementBuf)});`,
             );
             break;
           case ReadMode.Escaped:
