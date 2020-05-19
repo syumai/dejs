@@ -86,6 +86,18 @@ const decoder = new TextDecoder("utf-8");
       expected: "",
     },
     {
+      name: "Escaped with semi",
+      body: "<%= param; %>",
+      param: "<div>test</div>",
+      expected: escape("<div>test</div>"),
+    },
+    {
+      name: "Raw with semi",
+      body: "<%- param; %>",
+      param: "<div>test</div>",
+      expected: "<div>test</div>",
+    },
+    {
       name: "Security: Includes JavaScript",
       body: "<%= param %>console.log(`${param}`)\\\\",
       param: "test",
@@ -128,10 +140,16 @@ const decoder = new TextDecoder("utf-8");
       expected: "<div>test</div>",
     },
     {
-      name: "Include",
-      fileName: "include",
+      name: "Raw Include",
+      fileName: "raw-include",
       param: "<div>test</div>",
       expected: "<div>test</div>",
+    },
+    {
+      name: "Escaped Include",
+      fileName: "escaped-include",
+      param: "<div>test</div>",
+      expected: escape("<div>test</div>"),
     },
   ];
 
