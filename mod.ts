@@ -49,6 +49,10 @@ async function bufToStr(buf: Deno.Buffer): Promise<string> {
   return decoder.decode(await Deno.readAll(buf));
 }
 
+function removeLastSemi(s: string): string {
+  return s.trimRight().replace(/;$/, "");
+}
+
 async function bufToStrWithSanitize(buf: Deno.Buffer): Promise<string> {
   return sanitize(await bufToStr(buf));
 }
@@ -134,18 +138,20 @@ export async function compile(reader: Reader): Promise<Template> {
         switch (readMode) {
           case ReadMode.Raw:
             statements.push(
-              `;$$OUTPUT.push(${await bufToStr(statementBuf)});`,
+              `;$$OUTPUT.push(${
+                removeLastSemi(await bufToStr(statementBuf))
+              });`,
             );
             break;
           case ReadMode.Escaped:
             statements.push(
-              `;$$OUTPUT.push($$ESCAPE(${await bufToStrWithSanitize(
-                statementBuf,
-              )}));`,
+              `;$$OUTPUT.push($$ESCAPE(${
+                removeLastSemi(await bufToStr(statementBuf))
+              }));`,
             );
             break;
           case ReadMode.Evaluate:
-            statements.push(await bufToStrWithSanitize(statementBuf));
+            statements.push(await bufToStr(statementBuf));
             break;
         }
       }
