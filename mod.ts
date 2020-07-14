@@ -1,6 +1,6 @@
 const { open } = Deno;
 type Reader = Deno.Reader;
-import { stringsReader } from "./vendor/https/deno.land/std/io/util.ts";
+import { encode } from "./vendor/https/deno.land/std/encoding/utf8.ts";
 import { BufReader } from "./vendor/https/deno.land/std/io/bufio.ts";
 import escape from "./vendor/https/deno.land/x/lodash/escape.js";
 
@@ -30,6 +30,12 @@ interface Template {
 }
 
 const decoder = new TextDecoder("utf-8");
+
+class StringReader extends Deno.Buffer {
+  constructor(s: string) {
+    super(encode(s).buffer);
+  }
+}
 
 async function include(path: string, params: Params): Promise<string> {
   const result = await renderFile(path, params);
@@ -178,7 +184,7 @@ export async function renderToString(
   body: string,
   params: Params,
 ): Promise<string> {
-  const reader = stringsReader(body);
+  const reader = new StringReader(body);
   const template = await compile(reader);
   return template(params);
 }
@@ -195,7 +201,7 @@ export async function renderFileToString(
 
 export async function render(body: string, params: Params): Promise<Reader> {
   const result = await renderToString(body, params);
-  return stringsReader(result);
+  return new StringReader(result);
 }
 
 export async function renderFile(
@@ -203,5 +209,5 @@ export async function renderFile(
   params: Params,
 ): Promise<Reader> {
   const result = await renderFileToString(path, params);
-  return stringsReader(result);
+  return new StringReader(result);
 }
