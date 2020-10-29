@@ -1,0 +1,10 @@
+{
+    "name": "dejs",
+    "description": "ejs template engine for deno.",
+    "homepage": "https://github.com/syumai/dejs",
+    "files": [
+    "./**/*.ts",
+    "README.md"
+    ],
+    "entry": "./mod.ts"
+}
