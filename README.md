@@ -21,7 +21,7 @@
 ## Usage
 
 ```ts
-import * as dejs from 'https://deno.land/x/dejs@0.9.1/mod.ts';
+import * as dejs from 'https://deno.land/x/dejs@0.9.2/mod.ts';
 ```
 
 - **`renderFile`**`(filePath: string, params: Params): Promise<Deno.Reader>`
