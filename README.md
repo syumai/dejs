@@ -21,7 +21,7 @@
 ## Usage
 
 ```ts
-import * as dejs from 'https://deno.land/x/dejs@0.9.2/mod.ts';
+import * as dejs from "https://deno.land/x/dejs@0.9.3/mod.ts";
 ```
 
 - **`renderFile`**`(filePath: string, params: Params): Promise<Deno.Reader>`
@@ -52,11 +52,11 @@ import * as dejs from 'https://deno.land/x/dejs@0.9.2/mod.ts';
 
 ```ts
 const { cwd, stdout, copy } = Deno;
-import { renderFile } from 'https://deno.land/x/dejs/mod.ts';
+import { renderFile } from "https://deno.land/x/dejs/mod.ts";
 
 (async () => {
   const output = await renderFile(`${cwd()}/template.ejs`, {
-    name: 'world',
+    name: "world"
   });
   await copy(output, stdout);
 })();
@@ -77,7 +77,7 @@ $ deno index.ts
 
 ```ts
 const { cwd, stdout, copy } = Deno;
-import { render } from 'https://deno.land/x/dejs/mod.ts';
+import { render } from "https://deno.land/x/dejs/mod.ts";
 
 const template = `<body>
   <% if (name) { %>
@@ -87,7 +87,7 @@ const template = `<body>
 
 (async () => {
   const output = await render(template, {
-    name: 'world',
+    name: "world"
   });
   await copy(output, stdout);
 })();
@@ -136,7 +136,7 @@ await include(filePath, params)
 
 ```ts
 const { cwd, stdout, copy } = Deno;
-import { renderFile } from 'https://deno.land/x/dejs/mod.ts';
+import { renderFile } from "https://deno.land/x/dejs/mod.ts";
 
 (async () => {
   const output = await renderFile(`${cwd()}/views/main.ejs`);
