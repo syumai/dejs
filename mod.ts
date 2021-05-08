@@ -46,6 +46,7 @@ async function include(path: string, params: Params): Promise<string> {
 
 function sanitize(str: string): string {
   return str
+    .replace(/\\/g, "\\\\")
     .replace(/\`/g, "\\\`")
     .replace(/\$/g, "\\\$")
     .replace(/\\+$/, ""); // Trim backslashes at line end. TODO: Fix this to render backslashes.
