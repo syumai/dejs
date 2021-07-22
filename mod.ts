@@ -2,9 +2,12 @@ const { open } = Deno;
 type Reader = Deno.Reader;
 import { encode } from "./vendor/https/deno.land/std/encoding/utf8.ts";
 import { BufReader } from "./vendor/https/deno.land/std/io/bufio.ts";
+import { Buffer } from "./vendor/https/deno.land/std/io/buffer.ts";
+import { readAll } from "./vendor/https/deno.land/std/io/util.ts";
 import escape from "./vendor/https/deno.land/x/lodash/escape.js";
 
 export interface Params {
+  //deno-lint-ignore no-explicit-any
   [key: string]: any;
 }
 
@@ -31,7 +34,7 @@ interface Template {
 
 const decoder = new TextDecoder("utf-8");
 
-class StringReader extends Deno.Buffer {
+class StringReader extends Buffer {
   constructor(s: string) {
     super(encode(s).buffer);
   }
@@ -39,7 +42,7 @@ class StringReader extends Deno.Buffer {
 
 async function include(path: string, params: Params): Promise<string> {
   const result = await renderFile(path, params);
-  const buf = new Deno.Buffer();
+  const buf = new Buffer();
   await buf.readFrom(result);
   return await bufToStr(buf);
 }
@@ -51,31 +54,32 @@ function sanitize(str: string): string {
     .replace(/\\+$/, ""); // Trim backslashes at line end. TODO: Fix this to render backslashes.
 }
 
-async function bufToStr(buf: Deno.Buffer): Promise<string> {
-  return decoder.decode(await Deno.readAll(buf));
+async function bufToStr(buf: Buffer): Promise<string> {
+  return decoder.decode(await readAll(buf));
 }
 
 function removeLastSemi(s: string): string {
   return s.trimRight().replace(/;$/, "");
 }
 
-async function bufToStrWithSanitize(buf: Deno.Buffer): Promise<string> {
+async function bufToStrWithSanitize(buf: Buffer): Promise<string> {
   return sanitize(await bufToStr(buf));
 }
 
 function NewTemplate(script: string): Template {
   return async (params: Params): Promise<string> => {
     const output: Array<string> = [];
-    await new Promise((resolve) => {
+    await new Promise((resolve, reject) => {
       const args = {
         ...params,
         include,
         $$OUTPUT: output,
         $$FINISHED: resolve,
+        $$ERROR: reject,
         $$ESCAPE: escape,
       };
       const src = `(async() => {
-        ${script}
+        try { ${script} } catch (error) { $$ERROR(error) }
         $$FINISHED();
       })();`;
       const f = new Function(...Object.keys(args), src);
@@ -89,7 +93,7 @@ export async function compile(reader: Reader): Promise<Template> {
   const src = new BufReader(reader);
   const buf: Array<number> = [];
   const statements: Array<string> = [];
-  const statementBuf = new Deno.Buffer();
+  const statementBuf = new Buffer();
   let readMode: ReadMode = ReadMode.Normal;
   const statementBufWrite = async (byte: number): Promise<number> =>
     await statementBuf.write(new Uint8Array([byte]));
