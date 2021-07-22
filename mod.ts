@@ -1,6 +1,5 @@
 const { open } = Deno;
 type Reader = Deno.Reader;
-import { encode } from "./vendor/https/deno.land/std/encoding/utf8.ts";
 import { BufReader } from "./vendor/https/deno.land/std/io/bufio.ts";
 import { Buffer } from "./vendor/https/deno.land/std/io/buffer.ts";
 import { readAll } from "./vendor/https/deno.land/std/io/util.ts";
@@ -32,11 +31,12 @@ interface Template {
   (params: Params): Promise<string>;
 }
 
+const encoder = new TextEncoder();
 const decoder = new TextDecoder("utf-8");
 
 class StringReader extends Buffer {
   constructor(s: string) {
-    super(encode(s).buffer);
+    super(encoder.encode(s).buffer);
   }
 }
 

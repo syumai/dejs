@@ -3,11 +3,11 @@
     {
       "protocol": "https",
       "path": "deno.land/std",
-      "version": "0.77.0",
+      "version": "0.102.0",
       "files": [
-        "/encoding/utf8.ts",
+        "/io/buffer.ts",
         "/io/bufio.ts",
-        "/io/readers.ts",
+        "/io/util.ts",
         "/testing/asserts.ts"
       ]
     },
