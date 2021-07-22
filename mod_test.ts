@@ -1,5 +1,8 @@
 const { Buffer, copy, cwd } = Deno;
-import { assertEquals, assertThrowsAsync } from "./vendor/https/deno.land/std/testing/asserts.ts";
+import {
+  assertEquals,
+  assertThrowsAsync,
+} from "./vendor/https/deno.land/std/testing/asserts.ts";
 import { readAll } from "./vendor/https/deno.land/std/io/util.ts";
 import * as dejs from "./mod.ts";
 import escape from "./vendor/https/deno.land/x/lodash/escape.js";
@@ -14,7 +17,7 @@ const decoder = new TextDecoder("utf-8");
     //deno-lint-ignore no-explicit-any
     param?: any;
     expected: string;
-    error?: { new():Error };
+    error?: { new (): Error };
   }
 
   const testCases: Array<testCase> = [
@@ -111,8 +114,8 @@ const decoder = new TextDecoder("utf-8");
       body: "<%= unknown %>",
       param: "",
       expected: "unknown is not defined",
-      error:ReferenceError,
-    }
+      error: ReferenceError,
+    },
   ];
 
   for (const tc of testCases) {
@@ -121,7 +124,11 @@ const decoder = new TextDecoder("utf-8");
       fn: async () => {
         const buf = new Buffer();
         if (tc.error) {
-          assertThrowsAsync(() => dejs.render(tc.body, { param: tc.param }), tc.error, tc.expected);
+          assertThrowsAsync(
+            () => dejs.render(tc.body, { param: tc.param }),
+            tc.error,
+            tc.expected,
+          );
           return;
         }
         await copy(await dejs.render(tc.body, { param: tc.param }), buf);
