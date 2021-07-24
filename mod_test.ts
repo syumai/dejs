@@ -192,3 +192,21 @@ const decoder = new TextDecoder("utf-8");
     });
   }
 })();
+
+Deno.test({
+  name: "override include",
+  fn: async () => {
+    const buf = new Buffer();
+    const overriddenInclude = () => "overridden";
+    await copy(
+      await dejs.renderFile(`${cwd()}/testdata/raw-include.ejs`, {
+        param: {},
+        include: overriddenInclude,
+      }),
+      buf,
+    );
+    const actual = decoder.decode(await readAll(buf));
+    const expected = "overridden";
+    assertEquals(actual, expected);
+  },
+});
