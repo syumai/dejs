@@ -48,10 +48,7 @@ async function include(path: string, params: Params): Promise<string> {
 }
 
 function sanitize(str: string): string {
-  return str
-    .replace(/\`/g, "\\\`")
-    .replace(/\$/g, "\\\$")
-    .replace(/\\+$/, ""); // Trim backslashes at line end. TODO: Fix this to render backslashes.
+  return str.replace(/\`/g, "\\`").replace(/\$/g, "\\$").replace(/\\+$/, ""); // Trim backslashes at line end. TODO: Fix this to render backslashes.
 }
 
 async function bufToStr(buf: Buffer): Promise<string> {
@@ -71,8 +68,8 @@ function NewTemplate(script: string): Template {
     const output: Array<string> = [];
     await new Promise((resolve, reject) => {
       const args = {
-        ...params,
         include,
+        ...params,
         $$OUTPUT: output,
         $$FINISHED: resolve,
         $$ERROR: reject,
@@ -156,7 +153,9 @@ export async function compile(reader: Reader): Promise<Template> {
           case ReadMode.Escaped:
             statements.push(
               `;$$OUTPUT.push($$ESCAPE(${
-                removeLastSemi(await bufToStr(statementBuf))
+                removeLastSemi(
+                  await bufToStr(statementBuf),
+                )
               }));`,
             );
             break;
