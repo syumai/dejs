@@ -1,7 +1,7 @@
 const { Buffer, copy, cwd } = Deno;
 import {
   assertEquals,
-  assertThrowsAsync,
+  assertRejects,
 } from "./vendor/https/deno.land/std/testing/asserts.ts";
 import { readAll } from "./vendor/https/deno.land/std/io/util.ts";
 import * as dejs from "./mod.ts";
@@ -124,8 +124,8 @@ const decoder = new TextDecoder("utf-8");
       fn: async () => {
         const buf = new Buffer();
         if (tc.error) {
-          assertThrowsAsync(
-            () => dejs.render(tc.body, { param: tc.param }),
+          assertRejects(
+            async () => await dejs.render(tc.body, { param: tc.param }),
             tc.error,
             tc.expected,
           );
