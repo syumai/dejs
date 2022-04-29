@@ -2,7 +2,8 @@
 
 [![Build Status](https://github.com/syumai/dejs/workflows/test/badge.svg?branch=master)](https://github.com/syumai/dejs/actions)
 
-- [ejs](https://ejs.co) template engine for [deno](https://github.com/denoland/deno).
+- [ejs](https://ejs.co) template engine for
+  [deno](https://github.com/denoland/deno).
 
 ## Features
 
@@ -21,18 +22,18 @@
 ## Usage
 
 ```ts
-import * as dejs from "https://deno.land/x/dejs@0.10.2/mod.ts";
+import * as dejs from "https://deno.land/x/dejs@0.10.3/mod.ts";
 ```
 
-- **`renderFile`**`(filePath: string, params: Params): Promise<Deno.Reader>`
+- **`renderFile`** `(filePath: string, params: Params): Promise<Deno.Reader>`
   - renders from file, outputs Deno.Reader
-- **`render`**`(body: string, params: Params): Promise<Deno.Reader>`
+- **`render`** `(body: string, params: Params): Promise<Deno.Reader>`
   - renders from string, outputs Deno.Reader
-- **`renderFileToString`**`(filePath: string, params: Params): Promise<string>`
+- **`renderFileToString`** `(filePath: string, params: Params): Promise<string>`
   - renders from file, outputs string
-- **`renderToString`**`(body: string, params: Params): Promise<string>`
+- **`renderToString`** `(body: string, params: Params): Promise<string>`
   - renders from string, outputs string
-- **`compile`**`(reader: Reader): Promise<Template>`
+- **`compile`** `(reader: Reader): Promise<Template>`
   - only compiles ejs and returns `Template(params: Params): string`
   - use this to cache compiled result of ejs
 
@@ -56,7 +57,7 @@ import { renderFile } from "https://deno.land/x/dejs/mod.ts";
 
 (async () => {
   const output = await renderFile(`${cwd()}/template.ejs`, {
-    name: "world"
+    name: "world",
   });
   await copy(output, stdout);
 })();
@@ -87,7 +88,7 @@ const template = `<body>
 
 (async () => {
   const output = await render(template, {
-    name: "world"
+    name: "world",
   });
   await copy(output, stdout);
 })();
@@ -96,7 +97,8 @@ const template = `<body>
 ### Include partial ejs template
 
 - To include template from other file, use `include` function in ejs.
-- `include` resolves views from relative path from **executed ts / js file**. (not from ejs template file).
+- `include` resolves views from relative path from **executed ts / js file**.
+  (not from ejs template file).
   - This behavior may change in the future.
 
 #### Usage
