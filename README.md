@@ -55,12 +55,10 @@ import * as dejs from "https://deno.land/x/dejs@0.10.3/mod.ts";
 const { cwd, stdout, copy } = Deno;
 import { renderFile } from "https://deno.land/x/dejs/mod.ts";
 
-(async () => {
-  const output = await renderFile(`${cwd()}/template.ejs`, {
-    name: "world",
-  });
-  await copy(output, stdout);
-})();
+const output = await renderFile(`${cwd()}/template.ejs`, {
+  name: "world",
+});
+await copy(output, stdout);
 ```
 
 - console
@@ -86,12 +84,10 @@ const template = `<body>
   <% } %>
 </body>`;
 
-(async () => {
-  const output = await render(template, {
-    name: "world",
-  });
-  await copy(output, stdout);
-})();
+const output = await render(template, {
+  name: "world",
+});
+await copy(output, stdout);
 ```
 
 ### Include partial ejs template
@@ -140,10 +136,8 @@ await include(filePath, params)
 const { cwd, stdout, copy } = Deno;
 import { renderFile } from "https://deno.land/x/dejs/mod.ts";
 
-(async () => {
-  const output = await renderFile(`${cwd()}/views/main.ejs`);
-  await copy(output, stdout);
-})();
+const output = await renderFile(`${cwd()}/views/main.ejs`);
+await copy(output, stdout);
 ```
 
 - console
